@@ -14,7 +14,7 @@ class Users(UserMixin, db.Model):
    # id_uzyt_wyd =  db.relationship('uzytkownik_wydarzenie', backref='uzytkownicy')
 
     def __repr__(self):
-        return f'<{self.username}, {self.id_user}, {self.email}, {self.password}>'
+        return f'<{self.username}, {self.id}, {self.email}, {self.password}>'
 
     def set_password(self, haslo):
         self.password = generate_password_hash(haslo)
