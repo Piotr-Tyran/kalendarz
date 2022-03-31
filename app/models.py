@@ -1,7 +1,9 @@
-from app import db
+from app import db, login
+from flask_login import UserMixin
+from werkzeug.security import generate_password_hash, check_password_hash
 
 
-class Users(db.Model):
+class Users(UserMixin, db.Model):
 
     __tablename__ = 'uzytkownicy'
 
@@ -13,3 +15,14 @@ class Users(db.Model):
 
     def __repr__(self):
         return f'<{self.username}, {self.id_user}, {self.email}, {self.password}>'
+
+    def set_password(self, haslo):
+        self.password = generate_password_hash(haslo)
+
+    def check_password(self, haslo):
+        return check_password_hash(self.password, haslo)
+
+
+@login.user_loader
+def load_user(id_user):
+    return Users.query.get(int(id_user))
