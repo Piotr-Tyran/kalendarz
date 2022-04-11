@@ -1,5 +1,6 @@
 from app import db, login
 from flask_login import UserMixin
+from sqlalchemy.orm import relationship
 from werkzeug.security import generate_password_hash, check_password_hash
 
 
@@ -11,8 +12,8 @@ class Users(UserMixin, db.Model):
     email = db.Column(db.String(50), nullable=False, unique=True)
     username = db.Column(db.String(30), nullable=False)
     password = db.Column(db.String(100), nullable=False)
-   # id_uzyt_wyd =  db.relationship('uzytkownik_wydarzenie', backref='uzytkownicy')
-
+    id_user_event = db.relationship('User_Event', backref='Users')
+    
     def __repr__(self):
         return f'<{self.username}, {self.id}, {self.email}, {self.password}>'
 
@@ -21,6 +22,64 @@ class Users(UserMixin, db.Model):
 
     def check_password(self, haslo):
         return check_password_hash(self.password, haslo)
+    
+    
+    
+class Events(UserMixin, db.Model):
+
+    __tablename__ = 'Events'
+
+    id = db.Column(db.Integer, primary_key=True, nullable=False)
+    name = db.Column(db.String(100), nullable=False)
+    start_date = db.Column(db.DateTime, nullable=False)
+    stop_date = db.Column(db.DateTime, nullable=False)
+    types = db.Column(db.Integer, nullable=False)
+    id_user_event = db.relationship('User_Event', backref='Events')
+    
+    def __repr__(self):
+        return f'<{self.name}, {self.id}, {self.start_date}, {self.stop_date}, {self.types}, {self.id_user_event}>'
+    
+
+class Tags(UserMixin, db.Model):
+
+    __tablename__ = 'Tags'
+
+    id = db.Column(db.Integer, primary_key=True, nullable=False)
+    tags = db.Column(db.String(50), nullable=False)
+    id_user_event = db.relationship('User_Event', backref='Tags')
+    
+    def __repr__(self):
+        return f'<{self.tags}, {self.id}, {self.id_user_event}>'
+
+
+class Reminders(UserMixin, db.Model):
+
+    __tablename__ = 'Reminders'
+
+    id = db.Column(db.Integer, primary_key=True)
+    rem_before = db.Column(db.Numeric, nullable=False)
+    id_user_event = db.relationship('User_Event', backref='Reminders')
+    
+    def __repr__(self):
+        return f'<{self.rem_before}, {self.id}, {self.id_user_event}>'
+
+    
+class User_Event(UserMixin, db.Model):
+
+    __tablename__ = 'User_Event'
+
+    id = db.Column(db.Integer, primary_key=True, nullable=False)
+    owner = db.Column(db.Boolean, nullable=False)
+    finish = db.Column(db.Boolean, nullable=False)
+    description = db.Column(db.String(200), nullable=False)
+    aprove = db.Column(db.Boolean)
+    user_id = db.Column(db.Integer, db.ForeignKey('Users.id'))
+    events_id = db.Column(db.Integer, db.ForeignKey('Events.id'))
+    tags_id = db.Column(db.Integer, db.ForeignKey('Tags.id'))
+    reminders_id = db.Column(db.Integer, db.ForeignKey('Reminders.id'))
+    
+    def __repr__(self):
+        return f'<{self.owner}, {self.id}, {self.finish}, {self.describtion}, {self.aprove}, {self.user_id}, {self.events_id}, {self.tags_id}, {self.reminders_id} >'
 
 
 @login.user_loader
