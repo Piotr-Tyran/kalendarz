@@ -1,8 +1,9 @@
 from flask import render_template, flash, redirect, url_for
 from app import app, db
-from app.forms import LoginForm, RegistrationForm
+from app.forms import LoginForm, RegistrationForm, AddEventForm
 from flask_login import current_user, login_user, logout_user
-from app.models import Users
+from app.models import Users, Events, Users_Events
+from sqlalchemy import desc
 
 
 @app.route('/')
@@ -38,7 +39,8 @@ def register():
         return redirect(url_for('index'))
     form = RegistrationForm()
     if form.validate_on_submit():
-        user = Users(username=form.username.data, email=form.email.data,
+        user = Users(username=form.username.data,
+                     email=form.email.data,
                      password='')
         user.set_password(form.password.data)
         db.session.add(user)
@@ -46,3 +48,25 @@ def register():
         flash(f'Witaj {user.username}!')
         return redirect(url_for('login'))
     return render_template('register.html', title='Rejestracja', form=form)
+
+
+@app.route('/add_event', methods=['GET', 'POST'])
+def add_event():
+    form = AddEventForm()
+    if form.validate_on_submit():
+        event = Events(name=form.name.data,
+                       start=form.start_date.data,
+                       stop=form.stop_date.data,
+                       types=0)
+        db.session.add(event)
+        db.session.commit()
+        event_id = Events.query.filter_by(name=form.name.data).\
+            order_by(desc(Events.id)).first().id
+        user_event = Users_Events(users_id=current_user.id,
+                                  events_id=event_id)
+        db.session.add(user_event)
+        db.session.commit()
+        return redirect(url_for('index'))
+    return render_template('add_event.html',
+                           title='Dodawanie nowego wydarzenia',
+                           form=form)
