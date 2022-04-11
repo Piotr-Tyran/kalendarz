@@ -7,12 +7,12 @@ from sqlalchemy import desc
 
 
 @app.route('/')
-@app.route('/index')
+@app.route('/Strona_domowa')
 def index():
     return render_template('index.html', title="strona startowa")
 
 
-@app.route('/login', methods=['GET', 'POST'])
+@app.route('/Logowanie', methods=['GET', 'POST'])
 def login():
     if current_user.is_authenticated:
         return redirect(url_for('index'))
@@ -33,7 +33,7 @@ def logout():
     return redirect(url_for('index'))
 
 
-@app.route('/register', methods=['GET', 'POST'])
+@app.route('/Rejestracja', methods=['GET', 'POST'])
 def register():
     if current_user.is_authenticated:
         return redirect(url_for('index'))
