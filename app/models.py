@@ -24,7 +24,6 @@ class Users(UserMixin, db.Model):
         return check_password_hash(self.password, haslo)
     
     
-    
 class Events(UserMixin, db.Model):
 
     __tablename__ = 'Events'
@@ -79,7 +78,7 @@ class Users_Events(UserMixin, db.Model):
     reminders_id = db.Column(db.Integer, db.ForeignKey('Reminders.id'))
     
     def __repr__(self):
-        return f'<{self.owner}, {self.id}, {self.finish}, {self.describtion}, {self.aprove}, {self.users_id}, {self.events_id}, {self.tags_id}, {self.reminders_id} >'
+        return f'<{self.owner}, {self.id}, {self.finish}, {self.description}, {self.aprove}, {self.users_id}, {self.events_id}, {self.tags_id}, {self.reminders_id} >'
 
 
 @login.user_loader
