@@ -26,13 +26,42 @@
 				<td style="width: 12.5%"><div><center><script>date = new Date(2022,3,24).toLocaleDateString(); document.write(date);</script></center></div></td></tr>
 	</table>
 	<TABLE BORDER="1" style="width: 1500px; height: 400px;">				
-			<tr><td style="width: 15%"></td>
-				<td style="width: 15%"></td>
-				<td style="width: 15%"></td>
-				<td style="width: 15%"></td>
-				<td style="width: 15%"></td>
-				<td style="width: 12.5%"></td>
-				<td style="width: 12.5%"></td></tr>
+			<tr>
+				<td style="width: 15%">
+					{% with day=week[0] %}
+						{% include '_events.html' %}
+					{% endwith %}
+				</td>
+				<td style="width: 15%">
+					{% with day=week[1] %}
+						{% include '_events.html' %}
+					{% endwith %}
+				</td>
+				<td style="width: 15%">
+					{% with day=week[2] %}
+						{% include '_events.html' %}
+					{% endwith %}
+				</td>
+				<td style="width: 15%">
+					{% with day=week[3] %}
+						{% include '_events.html' %}
+					{% endwith %}
+				</td>
+				<td style="width: 15%">
+					{% with day=week[4] %}
+						{% include '_events.html' %}
+					{% endwith %}
+				</td>
+				<td style="width: 12.5%">
+					{% with day=week[5] %}
+						{% include '_events.html' %}
+					{% endwith %}
+				</td>
+				<td style="width: 12.5%">
+					{% with day=week[6] %}
+						{% include '_events.html' %}
+					{% endwith %}
+				</td></tr>
 		</tbody>
 	</table>
 {% endblock %}

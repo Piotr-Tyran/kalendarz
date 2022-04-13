@@ -1,0 +1,7 @@
+<center>
+    {% for event in events %}
+        {% if event.start_date.date() == day.date() %}
+            <p>{{ event.name }}</p>
+        {% endif %}
+    {% endfor %}
+</center>

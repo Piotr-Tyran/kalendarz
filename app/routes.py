@@ -4,6 +4,7 @@ from app.forms import LoginForm, RegistrationForm, AddEventForm, CalendarForm
 from flask_login import current_user, login_user, logout_user, login_required
 from app.models import Users, Events, Users_Events
 from sqlalchemy import desc
+from datetime import datetime
 
 
 @app.route('/')
@@ -16,7 +17,11 @@ def index():
 @login_required
 def calendar():
     form = CalendarForm()
-    return render_template('calendar.html', title='Kalendarz', form=form)
+    week = [datetime(2022, 4, 18+x, 0, 0, 0) for x in range(7)]
+    events = Events.query.join(Users_Events.query.filter_by(users_id=current_user.id)).\
+        where(Events.id == Users_Events.events_id).all()
+    return render_template('calendar.html', title='Kalendarz',
+                           form=form, week=week, events=events)
 
 
 @app.route('/Logowanie', methods=['GET', 'POST'])
@@ -70,7 +75,10 @@ def add_event():
         event_id = Events.query.filter_by(name=form.name.data).\
             order_by(desc(Events.id)).first().id
         user_event = Users_Events(users_id=current_user.id,
-                                  events_id=event_id)
+                                  events_id=event_id,
+                                  owner=True,
+                                  finish=False,
+                                  description='')
         db.session.add(user_event)
         db.session.commit()
         return redirect(url_for('index'))
