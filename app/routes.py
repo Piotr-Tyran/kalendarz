@@ -50,7 +50,7 @@ def register():
     return render_template('register.html', title='Rejestracja', form=form)
 
 
-@app.route('/add_event', methods=['GET', 'POST'])
+@app.route('/Dodawanie_wydarzeń', methods=['GET', 'POST'])
 def add_event():
     form = AddEventForm()
     if form.validate_on_submit():
