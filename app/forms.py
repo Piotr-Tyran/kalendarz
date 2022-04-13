@@ -35,3 +35,6 @@ class AddEventForm(FlaskForm):
     start = DateField('Rozpoczęcie:', validators=[DataRequired()])
     stop = DateField('Zakończenie:', validators=[DataRequired()])
     submit = SubmitField('Utwórz wydarzenie')
+    
+class CalendarForm(FlaskForm):
+    submit = SubmitField('Dodaj wydarzenie')
