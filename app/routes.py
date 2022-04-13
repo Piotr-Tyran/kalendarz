@@ -11,11 +11,13 @@ from sqlalchemy import desc
 def index():
     return render_template('index.html', title="strona startowa")
 
+
 @app.route('/Kalendarz')
 @login_required
 def calendar():
     form = CalendarForm()
     return render_template('calendar.html', title='Kalendarz', form=form)
+
 
 @app.route('/Logowanie', methods=['GET', 'POST'])
 def login():
@@ -60,8 +62,8 @@ def add_event():
     form = AddEventForm()
     if form.validate_on_submit():
         event = Events(name=form.name.data,
-                       start=form.start_date.data,
-                       stop=form.stop_date.data,
+                       start_date=form.start.data,
+                       stop_date=form.stop.data,
                        types=0)
         db.session.add(event)
         db.session.commit()
