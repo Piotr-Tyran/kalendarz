@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1> <center>Kalendarz</center> </h1>
+	
+	<p><center> {{ form.submit() }} </center></p>
+
+
+	<TABLE BORDER="1" style="width: 1500px; height: 50px;">
+		<tbody>
+			<tr><td style="width: 15%"><center>PONIEDZIAŁEK</center></td>
+				<td style="width: 15%"><center>WTOREK</center></td>
+				<td style="width: 15%"><center>ŚRODA</center></td>
+				<td style="width: 15%"><center>CZWARTEK</center></td>
+				<td style="width: 15%"><center>PIĄTEK</center></td>
+				<td style="width: 12.5%"><center>SOBOTA</center></td>
+				<td style="width: 12.5%"><center>NIEDZIELA</center></td></tr>
+	</table>
+	<TABLE BORDER="1" style="width: 1500px; height: 50px;">
+			<tr><td style="width: 15%"><div><center><script>date = new Date(2022,3,18).toLocaleDateString(); document.write(date);</script></center></div></td>
+				<td style="width: 15%"><div><center><script>date = new Date(2022,3,19).toLocaleDateString(); document.write(date);</script></center></div></td>
+				<td style="width: 15%"><div><center><script>date = new Date(2022,3,20).toLocaleDateString(); document.write(date);</script></center></div></td>
+				<td style="width: 15%"><div><center><script>date = new Date(2022,3,21).toLocaleDateString(); document.write(date);</script></center></div></td>
+				<td style="width: 15%"><div><center><script>date = new Date(2022,3,22).toLocaleDateString(); document.write(date);</script></center></div></td>
+				<td style="width: 12.5%"><div><center><script>date = new Date(2022,3,23).toLocaleDateString(); document.write(date);</script></center></div></td>
+				<td style="width: 12.5%"><div><center><script>date = new Date(2022,3,24).toLocaleDateString(); document.write(date);</script></center></div></td></tr>
+	</table>
+	<TABLE BORDER="1" style="width: 1500px; height: 400px;">				
+			<tr><td style="width: 15%"></td>
+				<td style="width: 15%"></td>
+				<td style="width: 15%"></td>
+				<td style="width: 15%"></td>
+				<td style="width: 15%"></td>
+				<td style="width: 12.5%"></td>
+				<td style="width: 12.5%"></td></tr>
+		</tbody>
+	</table>
+{% endblock %}
