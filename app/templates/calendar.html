@@ -8,22 +8,21 @@
 
 	<TABLE BORDER="1" style="width: 1500px; height: 50px;">
 		<tbody>
-			<tr><td style="width: 15%"><center>PONIEDZIAŁEK</center></td>
-				<td style="width: 15%"><center>WTOREK</center></td>
-				<td style="width: 15%"><center>ŚRODA</center></td>
-				<td style="width: 15%"><center>CZWARTEK</center></td>
-				<td style="width: 15%"><center>PIĄTEK</center></td>
+			<tr><td style="width: 12.5%"><center>PONIEDZIAŁEK</center></td>
+				<td style="width: 12.5%"><center>WTOREK</center></td>
+				<td style="width: 12.5%"><center>ŚRODA</center></td>
+				<td style="width: 12.5%"><center>CZWARTEK</center></td>
+				<td style="width: 12.5%"><center>PIĄTEK</center></td>
 				<td style="width: 12.5%"><center>SOBOTA</center></td>
 				<td style="width: 12.5%"><center>NIEDZIELA</center></td></tr>
 	</table>
 	<TABLE BORDER="1" style="width: 1500px; height: 50px;">
-			<tr><td style="width: 15%"><div><center><script>date = new Date(2022,3,18).toLocaleDateString(); document.write(date);</script></center></div></td>
-				<td style="width: 15%"><div><center><script>date = new Date(2022,3,19).toLocaleDateString(); document.write(date);</script></center></div></td>
-				<td style="width: 15%"><div><center><script>date = new Date(2022,3,20).toLocaleDateString(); document.write(date);</script></center></div></td>
-				<td style="width: 15%"><div><center><script>date = new Date(2022,3,21).toLocaleDateString(); document.write(date);</script></center></div></td>
-				<td style="width: 15%"><div><center><script>date = new Date(2022,3,22).toLocaleDateString(); document.write(date);</script></center></div></td>
-				<td style="width: 12.5%"><div><center><script>date = new Date(2022,3,23).toLocaleDateString(); document.write(date);</script></center></div></td>
-				<td style="width: 12.5%"><div><center><script>date = new Date(2022,3,24).toLocaleDateString(); document.write(date);</script></center></div></td></tr>
+			<tr>
+				{% for day in week %}
+				<td style="width: 12.5%">
+					<div><center>{{ day.date() }}</center></div>
+				</td>
+				{% endfor %}
 	</table>
 	<TABLE BORDER="1" style="width: 1500px; height: 400px;">				
 			<tr>

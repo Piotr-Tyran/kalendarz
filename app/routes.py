@@ -1,10 +1,11 @@
 from flask import render_template, flash, redirect, url_for
 from app import app, db
-from app.forms import LoginForm, RegistrationForm, AddEventForm, CalendarForm
+from app.forms import LoginForm, RegistrationForm, AddEventForm,\
+    CalendarForm
 from flask_login import current_user, login_user, logout_user, login_required
 from app.models import Users, Events, Users_Events
 from sqlalchemy import desc
-from datetime import datetime
+from datetime import datetime, timedelta
 
 
 @app.route('/')
@@ -17,7 +18,9 @@ def index():
 @login_required
 def calendar():
     form = CalendarForm()
-    week = [datetime(2022, 4, 18+x, 0, 0, 0) for x in range(7)]
+    today = datetime.today().isocalendar()
+    monday = datetime.fromisocalendar(today.year, today.week, 1)
+    week = [monday + timedelta(days=x) for x in range(7)]
     events = Events.query.join(Users_Events.query.filter_by(users_id=current_user.id)).\
         where(Events.id == Users_Events.events_id).all()
     return render_template('calendar.html', title='Kalendarz',
@@ -62,7 +65,7 @@ def register():
     return render_template('register.html', title='Rejestracja', form=form)
 
 
-@app.route('/add_event', methods=['GET', 'POST'])
+@app.route('/Dodaj_wydarzenie', methods=['GET', 'POST'])
 def add_event():
     form = AddEventForm()
     if form.validate_on_submit():
@@ -85,4 +88,3 @@ def add_event():
     return render_template('add_event.html',
                            title='Dodawanie nowego wydarzenia',
                            form=form)
-
