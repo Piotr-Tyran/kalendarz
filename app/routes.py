@@ -1,7 +1,6 @@
 from flask import render_template, flash, redirect, url_for
 from app import app, db
-from app.forms import LoginForm, RegistrationForm, AddEventForm,\
-    CalendarForm
+from app.forms import LoginForm, RegistrationForm, AddEventForm
 from flask_login import current_user, login_user, logout_user, login_required
 from app.models import Users, Events, Users_Events
 from sqlalchemy import desc
@@ -14,17 +13,17 @@ def index():
     return render_template('index.html', title="strona startowa")
 
 
-@app.route('/Kalendarz')
+@app.route('/Kalendarz/<offset>')
 @login_required
-def calendar():
-    form = CalendarForm()
+def calendar(offset=0):
+    offset = int(offset)
     today = datetime.today().isocalendar()
     monday = datetime.fromisocalendar(today.year, today.week, 1)
-    week = [monday + timedelta(days=x) for x in range(7)]
+    week = [monday + timedelta(days=x, weeks=offset) for x in range(7)]
     events = Events.query.join(Users_Events.query.filter_by(users_id=current_user.id)).\
         where(Events.id == Users_Events.events_id).all()
     return render_template('calendar.html', title='Kalendarz',
-                           form=form, week=week, events=events)
+                           offset=offset, week=week, events=events)
 
 
 @app.route('/Logowanie', methods=['GET', 'POST'])

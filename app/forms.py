@@ -3,6 +3,7 @@ from wtforms import StringField, PasswordField, SubmitField
 from wtforms.fields import DateField
 from wtforms.validators import DataRequired, ValidationError, Email, EqualTo
 from app.models import Users
+from datetime import datetime
 
 
 class LoginForm(FlaskForm):
@@ -32,9 +33,8 @@ class RegistrationForm(FlaskForm):
 
 class AddEventForm(FlaskForm):
     name = StringField('Wydarzenie:', default='')
-    start = DateField('Rozpoczęcie:', validators=[DataRequired()])
-    stop = DateField('Zakończenie:', validators=[DataRequired()])
+    start = DateField('Rozpoczęcie:', default=datetime.today(),
+                      validators=[DataRequired()])
+    stop = DateField('Zakończenie:', default=datetime.today(),
+                     validators=[DataRequired()])
     submit = SubmitField('Utwórz wydarzenie')
-    
-class CalendarForm(FlaskForm):
-    submit = SubmitField('Dodaj wydarzenie')
