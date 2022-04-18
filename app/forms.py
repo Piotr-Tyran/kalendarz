@@ -38,3 +38,10 @@ class AddEventForm(FlaskForm):
     stop = DateField('Zakończenie:', default=datetime.today(),
                      validators=[DataRequired()])
     submit = SubmitField('Utwórz wydarzenie')
+
+
+class ViewEventForm(FlaskForm):
+    name = StringField('Wydarzenie:')
+    start = DateField('Rozpoczęcie:', validators=[DataRequired()])
+    stop = DateField('Zakończenie:', validators=[DataRequired()])
+    submit = SubmitField('Zmień wydarzenie')

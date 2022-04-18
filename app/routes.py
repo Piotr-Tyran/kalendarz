@@ -1,6 +1,7 @@
-from flask import render_template, flash, redirect, url_for
+from flask import render_template, flash, redirect, url_for, request
 from app import app, db
-from app.forms import LoginForm, RegistrationForm, AddEventForm
+from app.forms import LoginForm, RegistrationForm, AddEventForm,\
+    ViewEventForm
 from flask_login import current_user, login_user, logout_user, login_required
 from app.models import Users, Events, Users_Events
 from sqlalchemy import desc
@@ -37,7 +38,7 @@ def login():
             flash('Błędna nazwa użytkownika lub hasło.')
             return redirect(url_for('login'))
         login_user(user)
-        return redirect(url_for('calendar'))
+        return redirect(url_for('calendar', offset=0))
     return render_template('login.html', title='Logowanie', form=form)
 
 
@@ -87,3 +88,27 @@ def add_event():
     return render_template('add_event.html',
                            title='Dodawanie nowego wydarzenia',
                            form=form)
+
+
+@app.route('/Zobacz_wydarzenie/<id>', methods=['GET', 'POST'])
+@login_required
+def view_event(id):
+    event = Events.query.filter_by(id=id).first_or_404()
+    user_event = Users_Events.query.\
+        filter_by(events_id=id, users_id=current_user.id).\
+        first_or_404()
+    form = ViewEventForm()
+    if form.validate_on_submit():
+        event.name = form.name.data
+        event.start_date = form.start.data
+        event.stop_date = form.stop.data
+        db.session.commit()
+        flash('Zapisano zmiany')
+        return redirect(url_for('view_event', id=id))
+    elif request.method == 'GET':
+        form.start.data = event.start_date
+        form.stop.data = event.stop_date
+    return render_template('view_event.html', event=event,
+                           user_event=user_event,
+                           title=event.name, form=form)
+
