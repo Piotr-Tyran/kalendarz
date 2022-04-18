@@ -1,6 +1,6 @@
 <center>
     {% for event in events %}
-        {% if event.start_date.date() == day.date() %}
+        {% if event.start_date.date() <= day.date() <= event.stop_date.date() %}
             <p><a href="{{ url_for('view_event', id=event.id) }}">{{ event.name }}</a></p>
         {% endif %}
     {% endfor %}
