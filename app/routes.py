@@ -14,7 +14,7 @@ def index():
     return render_template('index.html', title="strona startowa")
 
 
-@app.route('/Kalendarz/<offset>')
+@app.route('/Kalendarz')
 @login_required
 def calendar(offset=0):
     offset = int(offset)
