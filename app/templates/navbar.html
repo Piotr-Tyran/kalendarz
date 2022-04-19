@@ -7,10 +7,14 @@
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav">
           <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="{{ url_for('index') }}">Strona domowa</a>
+            {% if current_user.is_active %}
+            <a class = "nav-link active" aria-current="page" href="{{ url_for('calendar') }}">Strona domowa</a>
+            {% endif %}           
           </li>
           <li class="nav-item">
+            {% if current_user.is_active %}
             <a class="nav-link active" aria-current="page" href="{{ url_for('add_event') }}">Dodawanie wydarzeń</a>
+            {% endif %}
           </li>
           <li class="nav-item">
             {% if current_user.is_anonymous %}
