@@ -1,23 +1,34 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <h1> <center>Kalendarz</center> </h1>
+    	<h1> <center>Kalendarz</center> </h1>
 	
 	<center>
-		<button onclick="window.location.href='{{ url_for('add_event') }}';">
+		<button type="submit" class="btn btn-success" onclick="window.location.href='{{ url_for('add_event') }}';">
+			
 			Dodaj wydarzenie
 		</button>
 	</center>
-	<p align="left">
-		<button onclick="window.location.href='{{ url_for('calendar', offset=offset-1) }}';">
-			Poprzedni tydzień
-		</button>
-	</p>
-	<p align="right">
-		<button onclick="window.location.href='{{ url_for('calendar', offset=offset+1) }}';">
-			Następny tydzień
-		</button>
-	</p>
+
+	<TABLE style="width: 1500px; height: 50px;">
+		<tbody>
+			<tr>
+				<td>
+				<p align="left">
+					<button type="submit" class="btn btn-primary" onclick="window.location.href='{{ url_for('calendar', offset=offset-1) }}';">
+						Poprzedni tydzień
+					</button>
+				</p>
+				</td>
+				<td>
+				<p align="right">
+					<button type="submit" class="btn btn-primary" onclick="window.location.href='{{ url_for('calendar', offset=offset+1) }}';">
+						Następny tydzień
+					</button>
+				</p>
+				</td>
+			</tr>
+	</table>
 
 	<TABLE BORDER="1" style="width: 1500px; height: 50px;">
 		<tbody>
