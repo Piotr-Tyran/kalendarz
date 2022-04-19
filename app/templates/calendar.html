@@ -15,14 +15,14 @@
 			<tr>
 				<td>
 				<p align="left">
-					<button type="submit" class="btn btn-primary" onclick="window.location.href='{{ url_for('calendar', offset=offset-1) }}';">
+					<button type="submit" class="btn btn-primary" onclick="window.location.href='{{ url_for('calendar', x=offset-1) }}';">
 						Poprzedni tydzień
 					</button>
 				</p>
 				</td>
 				<td>
 				<p align="right">
-					<button type="submit" class="btn btn-primary" onclick="window.location.href='{{ url_for('calendar', offset=offset+1) }}';">
+					<button type="submit" class="btn btn-primary" onclick="window.location.href='{{ url_for('calendar', x=offset+1) }}';">
 						Następny tydzień
 					</button>
 				</p>

@@ -15,9 +15,10 @@ def index():
 
 
 @app.route('/Kalendarz')
+@app.route('/Kalendarz?x=<x>')
 @login_required
-def calendar(offset=0):
-    offset = int(offset)
+def calendar(x=0):
+    offset = int(x)
     today = datetime.today().isocalendar()
     monday = datetime.fromisocalendar(today.year, today.week, 1)
     week = [monday + timedelta(days=x, weeks=offset) for x in range(7)]
@@ -38,7 +39,7 @@ def login():
             flash('Błędna nazwa użytkownika lub hasło.')
             return redirect(url_for('login'))
         login_user(user)
-        return redirect(url_for('calendar', offset=0))
+        return redirect(url_for('calendar'))
     return render_template('login.html', title='Logowanie', form=form)
 
 
