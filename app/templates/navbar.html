@@ -11,6 +11,11 @@
             <a class = "nav-link active" aria-current="page" href="{{ url_for('calendar') }}">Strona domowa</a>
             {% endif %}           
           </li>
+		  <li class="nav-item">
+            {% if current_user.is_active %}
+            <a class="nav-link active" aria-current="page" href="{{ url_for('calendar') }}">Kalendarz</a>
+            {% endif %}
+          </li>
           <li class="nav-item">
             {% if current_user.is_active %}
             <a class="nav-link active" aria-current="page" href="{{ url_for('add_event') }}">Dodawanie wydarzeń</a>
