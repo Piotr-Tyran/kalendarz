@@ -24,6 +24,15 @@
         <span style="color: red;">[{{ error }}]</span>
         {% endfor %}
     </p>
+    Wyślij przypomnienie:
+    {% for choice in form.choices %}
+        {{ choice(class="form-check-input") }}
+        {{ choice.label(class="form-check-label") }}
+    {% endfor %}
+    przed wydarzeniem.
+        {% for error in form.choices.errors %}
+        <span style="color: red;">[{{ error }}]</span>
+        {% endfor %}
     <p> {{ form.submit(class="btn btn-primary") }}</p>
 </form>
 {% endblock %}
