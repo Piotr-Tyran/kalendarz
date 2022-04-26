@@ -45,7 +45,8 @@ class Tags(UserMixin, db.Model):
 
     id = db.Column(db.Integer, primary_key=True, nullable=False)
     tags = db.Column(db.String(50), nullable=False)
-    id_users_events = db.relationship('Users_Events', backref='Tags')
+    id_users_events = db.Column(db.Integer, db.ForeignKey('Users_Events.id'))
+    
     
     def __repr__(self):
         return f'<{self.tags}, {self.id}, {self.id_users_events}>'
@@ -56,8 +57,8 @@ class Reminders(UserMixin, db.Model):
     __tablename__ = 'Reminders'
 
     id = db.Column(db.Integer, primary_key=True)
-    rem_before = db.Column(db.Numeric, nullable=False)
-    id_users_events = db.relationship('Users_Events', backref='Reminders')
+    rem_before = db.Column(db.Interval, nullable=False)
+    id_users_events = db.Column(db.Integer, db.ForeignKey('Users_Events.id'))
     
     def __repr__(self):
         return f'<{self.rem_before}, {self.id}, {self.id_users_events}>'
@@ -74,8 +75,8 @@ class Users_Events(UserMixin, db.Model):
     aprove = db.Column(db.Boolean)
     users_id = db.Column(db.Integer, db.ForeignKey('Users.id'))
     events_id = db.Column(db.Integer, db.ForeignKey('Events.id'))
-    tags_id = db.Column(db.Integer, db.ForeignKey('Tags.id'))
-    reminders_id = db.Column(db.Integer, db.ForeignKey('Reminders.id'))
+    tags_id = db.relationship('Tags', backref='Users_Events')
+    reminders_id = db.relationship('Reminders', backref='Users_Events')
     
     def __repr__(self):
         return f'<{self.owner}, {self.id}, {self.finish}, {self.description}, {self.aprove}, {self.users_id}, {self.events_id}, {self.tags_id}, {self.reminders_id} >'
