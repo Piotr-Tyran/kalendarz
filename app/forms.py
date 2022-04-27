@@ -1,8 +1,10 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField,\
-    SelectMultipleField, widgets
+import flask_wtf
+from wtforms import StringField, PasswordField, SubmitField, SelectField,\
+    IntegerField, BooleanField, FieldList, Form, FormField
 from wtforms.fields import DateField
-from wtforms.validators import DataRequired, ValidationError, Email, EqualTo
+from wtforms.validators import DataRequired, ValidationError, Email,\
+    EqualTo, NumberRange
 from app.models import Users
 from datetime import datetime
 
@@ -41,18 +43,19 @@ class AddEventForm(FlaskForm):
     submit = SubmitField('Utwórz wydarzenie')
 
 
-class MultiCheckboxField(SelectMultipleField):
-    widget = widgets.ListWidget(prefix_label=False)
-    option_widget = widgets.CheckboxInput()
+class EntryForm(Form):
+    value = IntegerField('Ilość', validators=[NumberRange(min=0)])
+    time = SelectField('Czas',
+                       choices=[('week', 'tygodni'),
+                                ('day', 'dni'),
+                                ('hour', 'godzin'),
+                                ('minute', 'minut')])
+    delete = BooleanField('Usuń')
 
 
-class ViewEventForm(FlaskForm):
+class ViewEventForm(flask_wtf.FlaskForm):
     name = StringField('Wydarzenie:')
     start = DateField('Rozpoczęcie:', validators=[DataRequired()])
     stop = DateField('Zakończenie:', validators=[DataRequired()])
-    choices = MultiCheckboxField('Lista:', choices=[('week', 'tydzień,'),
-                                                  ('day', 'dzień,'),
-                                                  ('hour', 'godzinę,'),
-                                                  ('15min', '15 minut,'),
-                                                  ('5min', '5 minut')])
+    reminders = FieldList(FormField(EntryForm))
     submit = SubmitField('Zmień wydarzenie')

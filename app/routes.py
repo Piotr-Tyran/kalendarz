@@ -3,9 +3,10 @@ from app import app, db
 from app.forms import LoginForm, RegistrationForm, AddEventForm,\
     ViewEventForm
 from flask_login import current_user, login_user, logout_user, login_required
-from app.models import Users, Events, Users_Events
+from app.models import Users, Events, Users_Events, Reminders
 from sqlalchemy import desc
 from datetime import datetime, timedelta
+from app.funcs import to_timedelta, from_timedelta
 
 
 @app.route('/')
@@ -98,18 +99,25 @@ def view_event(id):
     user_event = Users_Events.query.\
         filter_by(events_id=id, users_id=current_user.id).\
         first_or_404()
+    reminders = Reminders.query.filter_by(id_users_events=user_event.id).all()
     form = ViewEventForm()
     if form.validate_on_submit():
         event.name = form.name.data
         event.start_date = form.start.data
         event.stop_date = form.stop.data
         db.session.commit()
+
         flash('Zapisano zmiany')
         return redirect(url_for('view_event', id=id))
     elif request.method == 'GET':
-        form.start.data = event.start_date
-        form.stop.data = event.stop_date
-    return render_template('view_event.html', event=event,
-                           user_event=user_event,
-                           title=event.name, form=form)
+        reminders_list = [from_timedelta(reminder.rem_before) for
+                          reminder in reminders]
+        reminders_list.append({'value': 0, 'time': '', 'delete': False})
+        form.process(data={'reminders': reminders_list,
+                           'name': event.name,
+                           'start': event.start_date,
+                           'stop': event.stop_date})
 
+    return render_template('view_event.html', form=form,
+                           user_event=user_event,
+                           title=event.name)
