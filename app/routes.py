@@ -16,7 +16,7 @@ def index():
 
 
 @app.route('/Kalendarz')
-@app.route('/Kalendarz?x=<x>')
+@app.route('/Kalendarz%<x>')
 @login_required
 def calendar(x=0):
     offset = int(x)
@@ -45,6 +45,7 @@ def login():
 
 
 @app.route('/logout')
+@login_required
 def logout():
     logout_user()
     return redirect(url_for('index'))
@@ -67,8 +68,8 @@ def register():
     return render_template('register.html', title='Rejestracja', form=form)
 
 
-@app.route('/Dodaj_wydarzenie', methods=['GET', 'POST'])
-def add_event():
+@app.route('/Dodaj_wydarzenie', methods=['POST'])
+def add_event_post():
     form = AddEventForm()
     if form.validate_on_submit():
         event = Events(name=form.name.data,
@@ -77,7 +78,7 @@ def add_event():
                        types=0)
         db.session.add(event)
         db.session.commit()
-        event_id = Events.query.filter_by(name=form.name.data).\
+        event_id = Events.query.filter_by(name=form.name.data). \
             order_by(desc(Events.id)).first().id
         user_event = Users_Events(users_id=current_user.id,
                                   events_id=event_id,
@@ -86,7 +87,24 @@ def add_event():
                                   description='')
         db.session.add(user_event)
         db.session.commit()
+        user_event_id = Users_Events.query. \
+            filter_by(users_id=current_user.id,
+                      events_id=event_id). \
+            first().id
+        for reminder in form.reminders.data:
+            if reminder['delete']:
+                r = Reminders(rem_before=to_timedelta(reminder),
+                                     id_users_events=user_event_id)
+                db.session.add(r)
+        db.session.commit()
         return redirect(url_for('index'))
+
+
+@app.route('/Dodaj_wydarzenie')
+def add_event_get():
+    form = AddEventForm()
+    reminder_list = [{'value': 0, 'time': 'hour', 'delete': True}]
+    form.process(data={'reminders': reminder_list})
     return render_template('add_event.html',
                            title='Dodawanie nowego wydarzenia',
                            form=form)

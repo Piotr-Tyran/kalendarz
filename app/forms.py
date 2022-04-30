@@ -34,15 +34,6 @@ class RegistrationForm(FlaskForm):
             raise ValidationError('Adres email jest już zajęty.')
 
 
-class AddEventForm(FlaskForm):
-    name = StringField('Wydarzenie:', default='')
-    start = DateField('Rozpoczęcie:', default=datetime.today(),
-                      validators=[DataRequired()])
-    stop = DateField('Zakończenie:', default=datetime.today(),
-                     validators=[DataRequired()])
-    submit = SubmitField('Utwórz wydarzenie')
-
-
 class EntryForm(Form):
     value = IntegerField('Ilość', validators=[NumberRange(min=0)])
     time = SelectField('Czas',
@@ -51,6 +42,16 @@ class EntryForm(Form):
                                 ('hour', 'godzin'),
                                 ('minute', 'minut')])
     delete = BooleanField('Usuń')
+
+
+class AddEventForm(FlaskForm):
+    name = StringField('Wydarzenie:', default='')
+    start = DateField('Rozpoczęcie:', default=datetime.today(),
+                      validators=[DataRequired()])
+    stop = DateField('Zakończenie:', default=datetime.today(),
+                     validators=[DataRequired()])
+    reminders = FieldList(FormField(EntryForm))
+    submit = SubmitField('Utwórz wydarzenie')
 
 
 class ViewEventForm(flask_wtf.FlaskForm):

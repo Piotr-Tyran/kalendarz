@@ -24,13 +24,6 @@
         <span style="color: red;">[{{ error }}]</span>
         {% endfor %}
     </p>
-<!--    Wyślij przypomnienie:
-    {% for choice in form.choices %}
-        {{ choice.data }}
-        {{ choice() }}
-        {{ choice.label() }}
-    {% endfor %}
-    przed wydarzeniem. -->
     <p>Przypomnij:</p>
     {% for reminder in form.reminders %}
         {% if loop.last %}
