@@ -105,6 +105,19 @@ def view_event(id):
         event.name = form.name.data
         event.start_date = form.start.data
         event.stop_date = form.stop.data
+        rem_len = len(reminders)
+        for i in range(rem_len + 1):
+            if i < rem_len:
+                r = Reminders.query.filter_by(id=reminders[i].id).first()
+                if form.reminders.data[i]['delete']:
+                    db.session.delete(r)
+                else:
+                    r.rem_before = to_timedelta(form.reminders.data[i])
+            elif not form.reminders.data[i]['delete']:
+                r = Reminders(rem_before=to_timedelta(form.reminders.data[-1]),
+                              id_users_events=user_event.id)
+                db.session.add(r)
+
         db.session.commit()
 
         flash('Zapisano zmiany')
@@ -112,7 +125,7 @@ def view_event(id):
     elif request.method == 'GET':
         reminders_list = [from_timedelta(reminder.rem_before) for
                           reminder in reminders]
-        reminders_list.append({'value': 0, 'time': '', 'delete': False})
+        reminders_list.append({'value': 0, 'time': 'week', 'delete': True})
         form.process(data={'reminders': reminders_list,
                            'name': event.name,
                            'start': event.start_date,
