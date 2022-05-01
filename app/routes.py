@@ -3,9 +3,10 @@ from app import app, db
 from app.forms import LoginForm, RegistrationForm, AddEventForm,\
     ViewEventForm
 from flask_login import current_user, login_user, logout_user, login_required
-from app.models import Users, Events, Users_Events
+from app.models import Users, Events, Users_Events, Reminders
 from sqlalchemy import desc
 from datetime import datetime, timedelta
+from app.funcs import to_timedelta, from_timedelta
 
 
 @app.route('/')
@@ -15,7 +16,7 @@ def index():
 
 
 @app.route('/Kalendarz')
-@app.route('/Kalendarz?x=<x>')
+@app.route('/Kalendarz%<x>')
 @login_required
 def calendar(x=0):
     offset = int(x)
@@ -44,6 +45,7 @@ def login():
 
 
 @app.route('/logout')
+@login_required
 def logout():
     logout_user()
     return redirect(url_for('index'))
@@ -66,8 +68,8 @@ def register():
     return render_template('register.html', title='Rejestracja', form=form)
 
 
-@app.route('/Dodaj_wydarzenie', methods=['GET', 'POST'])
-def add_event():
+@app.route('/Dodaj_wydarzenie', methods=['POST'])
+def add_event_post():
     form = AddEventForm()
     if form.validate_on_submit():
         event = Events(name=form.name.data,
@@ -76,7 +78,7 @@ def add_event():
                        types=0)
         db.session.add(event)
         db.session.commit()
-        event_id = Events.query.filter_by(name=form.name.data).\
+        event_id = Events.query.filter_by(name=form.name.data). \
             order_by(desc(Events.id)).first().id
         user_event = Users_Events(users_id=current_user.id,
                                   events_id=event_id,
@@ -85,7 +87,24 @@ def add_event():
                                   description='')
         db.session.add(user_event)
         db.session.commit()
+        user_event_id = Users_Events.query. \
+            filter_by(users_id=current_user.id,
+                      events_id=event_id). \
+            first().id
+        for reminder in form.reminders.data:
+            if reminder['delete']:
+                r = Reminders(rem_before=to_timedelta(reminder),
+                                     id_users_events=user_event_id)
+                db.session.add(r)
+        db.session.commit()
         return redirect(url_for('index'))
+
+
+@app.route('/Dodaj_wydarzenie')
+def add_event_get():
+    form = AddEventForm()
+    reminder_list = [{'value': 0, 'time': 'hour', 'delete': True}]
+    form.process(data={'reminders': reminder_list})
     return render_template('add_event.html',
                            title='Dodawanie nowego wydarzenia',
                            form=form)
@@ -98,18 +117,38 @@ def view_event(id):
     user_event = Users_Events.query.\
         filter_by(events_id=id, users_id=current_user.id).\
         first_or_404()
+    reminders = Reminders.query.filter_by(id_users_events=user_event.id).all()
     form = ViewEventForm()
     if form.validate_on_submit():
         event.name = form.name.data
         event.start_date = form.start.data
         event.stop_date = form.stop.data
+        rem_len = len(reminders)
+        for i in range(rem_len + 1):
+            if i < rem_len:
+                r = Reminders.query.filter_by(id=reminders[i].id).first()
+                if form.reminders.data[i]['delete']:
+                    db.session.delete(r)
+                else:
+                    r.rem_before = to_timedelta(form.reminders.data[i])
+            elif not form.reminders.data[i]['delete']:
+                r = Reminders(rem_before=to_timedelta(form.reminders.data[-1]),
+                              id_users_events=user_event.id)
+                db.session.add(r)
+
         db.session.commit()
+
         flash('Zapisano zmiany')
         return redirect(url_for('view_event', id=id))
     elif request.method == 'GET':
-        form.start.data = event.start_date
-        form.stop.data = event.stop_date
-    return render_template('view_event.html', event=event,
-                           user_event=user_event,
-                           title=event.name, form=form)
+        reminders_list = [from_timedelta(reminder.rem_before) for
+                          reminder in reminders]
+        reminders_list.append({'value': 0, 'time': 'week', 'delete': True})
+        form.process(data={'reminders': reminders_list,
+                           'name': event.name,
+                           'start': event.start_date,
+                           'stop': event.stop_date})
 
+    return render_template('view_event.html', form=form,
+                           user_event=user_event,
+                           title=event.name)

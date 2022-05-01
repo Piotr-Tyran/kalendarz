@@ -1,7 +1,10 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField
+import flask_wtf
+from wtforms import StringField, PasswordField, SubmitField, SelectField,\
+    IntegerField, BooleanField, FieldList, Form, FormField
 from wtforms.fields import DateField
-from wtforms.validators import DataRequired, ValidationError, Email, EqualTo
+from wtforms.validators import DataRequired, ValidationError, Email,\
+    EqualTo, NumberRange
 from app.models import Users
 from datetime import datetime
 
@@ -31,17 +34,29 @@ class RegistrationForm(FlaskForm):
             raise ValidationError('Adres email jest już zajęty.')
 
 
+class EntryForm(Form):
+    value = IntegerField('Ilość', validators=[NumberRange(min=0)])
+    time = SelectField('Czas',
+                       choices=[('week', 'tygodni'),
+                                ('day', 'dni'),
+                                ('hour', 'godzin'),
+                                ('minute', 'minut')])
+    delete = BooleanField('Usuń')
+
+
 class AddEventForm(FlaskForm):
     name = StringField('Wydarzenie:', default='')
     start = DateField('Rozpoczęcie:', default=datetime.today(),
                       validators=[DataRequired()])
     stop = DateField('Zakończenie:', default=datetime.today(),
                      validators=[DataRequired()])
+    reminders = FieldList(FormField(EntryForm))
     submit = SubmitField('Utwórz wydarzenie')
 
 
-class ViewEventForm(FlaskForm):
+class ViewEventForm(flask_wtf.FlaskForm):
     name = StringField('Wydarzenie:')
     start = DateField('Rozpoczęcie:', validators=[DataRequired()])
     stop = DateField('Zakończenie:', validators=[DataRequired()])
+    reminders = FieldList(FormField(EntryForm))
     submit = SubmitField('Zmień wydarzenie')

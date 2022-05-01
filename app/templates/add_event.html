@@ -25,6 +25,14 @@
         <span style="color: red;">[{{ error }}]</span>
         {% endfor %}
     </p>
+    <p>Dodaj przypomnienie:</p>
+    {% for reminder in form.reminders %}
+        <div>
+            {{ reminder.value() }}
+            {{ reminder.time() }} przed
+            {{ reminder.delete() }} dodaj
+        </div>
+    {% endfor %}
     <p> {{ form.submit(class="btn btn-primary") }}</p>
 </form>
 {% endblock %}

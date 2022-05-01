@@ -1,0 +1,8 @@
+<p>{{ user.username }},</p>
+<p>
+    Przypominamy, że już za {{ reminder.rem_before }} odbędzie się
+    <a href="{{ url_for('view_event', id=event.id, _external=True) }}">{{ event.name }}</a>.
+</p>
+
+Z poważaniem
+Zespół Kalendarza

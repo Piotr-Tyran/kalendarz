@@ -12,4 +12,8 @@ migrate = Migrate(app, db)
 login = LoginManager(app)
 login.login_view = 'login'
 
+from app.email import Async
+
+asynchronous = Async()
+
 from app import routes

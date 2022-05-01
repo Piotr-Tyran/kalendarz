@@ -1,0 +1,6 @@
+{{ user.username }}
+Przypominamy, że już za {{ reminder.rem_before }} odbędzie się {{ event.name }}.
+{{ url_for('view_event', id=event.id, _external=True) }}
+
+Z poważaniem
+Zespół Kalendarza
