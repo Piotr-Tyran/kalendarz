@@ -7,6 +7,7 @@ class Config(object):
         'sqlite:///' + os.path.join(os.path.abspath(os.path.dirname(__file__)),
                                     'todo.db')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+    SERVER_NAME = '127.0.0.1:5000'
     MAIL_SERVER = 'smtp.googlemail.com'
     MAIL_PORT = 587
     MAIL_USE_TLS = True
