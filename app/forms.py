@@ -1,7 +1,7 @@
 from flask_wtf import FlaskForm
 import flask_wtf
 from wtforms import StringField, PasswordField, SubmitField, SelectField,\
-    IntegerField, BooleanField, FieldList, Form, FormField
+    IntegerField, BooleanField, FieldList, Form, FormField, TimeField
 from wtforms.fields import DateField
 from wtforms.validators import DataRequired, ValidationError, Email,\
     EqualTo, NumberRange
@@ -50,6 +50,8 @@ class AddEventForm(FlaskForm):
                       validators=[DataRequired()])
     stop = DateField('Zakończenie:', default=datetime.today(),
                      validators=[DataRequired()])
+    od_godziny = TimeField('Od godziny:', validators=[DataRequired()])
+    do_godziny = TimeField('Do godziny:', validators=[DataRequired()])
     reminders = FieldList(FormField(EntryForm))
     submit = SubmitField('Utwórz wydarzenie')
 
