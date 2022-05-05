@@ -44,14 +44,18 @@ class EntryForm(Form):
     delete = BooleanField('Usuń')
 
 
+class CzasForm(Form):
+    od_godziny = TimeField('Od godziny:', validators=[DataRequired()])
+    do_godziny = TimeField('Do godziny:', validators=[DataRequired()])
+    caly_dzien = BooleanField('caly dzien')
+
 class AddEventForm(FlaskForm):
     name = StringField('Wydarzenie:', default='')
     start = DateField('Rozpoczęcie:', default=datetime.today(),
                       validators=[DataRequired()])
     stop = DateField('Zakończenie:', default=datetime.today(),
                      validators=[DataRequired()])
-    od_godziny = TimeField('Od godziny:', validators=[DataRequired()])
-    do_godziny = TimeField('Do godziny:', validators=[DataRequired()])
+    czas = FieldList(FormField(CzasForm))
     reminders = FieldList(FormField(EntryForm))
     submit = SubmitField('Utwórz wydarzenie')
 
