@@ -25,20 +25,16 @@
         <span style="color: red;">[{{ error }}]</span>
         {% endfor %}
     </p>
-    <p>
-        {{ form.od_godziny.label() }}<br>
-        {{ form.od_godziny(size=32) }}
-        {% for error in form.od_godziny.errors %}
-        <span style="color: red;">[{{ error }}]</span>
-        {% endfor %}
-    </p>
-    <p>
-        {{ form.do_godziny.label() }}<br>
-        {{ form.do_godziny(size=32) }}
-        {% for error in form.do_godziny.errors %}
-        <span style="color: red;">[{{ error }}]</span>
-        {% endfor %}
-    </p>
+    <p>Godzina wydarzenia:</p>
+    {% for reminder in form.czas %}
+        <div>
+            Od {{ reminder.od_godziny() }}
+            Do {{ reminder.do_godziny() }}
+            {{ reminder.caly_dzien() }} Czy wydarzenie ma trwac cały dzień
+        </div>
+    {% endfor %}
+    <p></p>
+
     <p>Dodaj przypomnienie:</p>
     {% for reminder in form.reminders %}
         <div>
