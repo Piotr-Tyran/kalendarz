@@ -5,7 +5,7 @@ from app.forms import LoginForm, RegistrationForm, AddEventForm,\
 from flask_login import current_user, login_user, logout_user, login_required
 from app.models import Users, Events, Users_Events, Reminders
 from sqlalchemy import desc
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, time
 from app.funcs import to_timedelta, from_timedelta
 
 
@@ -105,7 +105,8 @@ def add_event_post():
 def add_event_get():
     form = AddEventForm()
     reminder_list = [{'value': 0, 'time': 'hour', 'delete': True}]
-    form.process(data={'reminders': reminder_list})
+    time_list = [{'od_godziny': time(00,00), 'do_godziny': time(00,00), 'caly_dzien': False}]
+    form.process(data={'reminders': reminder_list, 'czas': time_list})
     return render_template('add_event.html',
                            title='Dodawanie nowego wydarzenia',
                            form=form)
