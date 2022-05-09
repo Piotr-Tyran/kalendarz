@@ -64,5 +64,6 @@ class ViewEventForm(flask_wtf.FlaskForm):
     name = StringField('Wydarzenie:')
     start = DateField('Rozpoczęcie:', validators=[DataRequired()])
     stop = DateField('Zakończenie:', validators=[DataRequired()])
+    time = FieldList(FormField(TimeForm))
     reminders = FieldList(FormField(EntryForm))
     submit = SubmitField('Zmień wydarzenie')
