@@ -74,8 +74,8 @@ def add_event_post():
     form = AddEventForm()
     if form.validate_on_submit():
         event = Events(name=form.name.data,
-                       start_date=form.start.data,
-                       stop_date=form.stop.data,
+                       start_date=datetime.strptime(str(form.start.data) + " " + str(form.time[0].od_godziny.data), "%Y-%m-%d %H:%M:%S"),
+                       stop_date=datetime.strptime(str(form.stop.data) + " " + str(form.time[0].do_godziny.data), "%Y-%m-%d %H:%M:%S"),
                        types=0)
         db.session.add(event)
         db.session.commit()
@@ -106,7 +106,7 @@ def add_event_get():
     form = AddEventForm()
     reminder_list = [{'value': 0, 'time': 'hour', 'delete': True}]
     time_list = [{'od_godziny': time(00,00), 'do_godziny': time(00,00), 'caly_dzien': False}]
-    form.process(data={'reminders': reminder_list, 'czas': time_list})
+    form.process(data={'reminders': reminder_list, 'time': time_list})
     return render_template('add_event.html',
                            title='Dodawanie nowego wydarzenia',
                            form=form)
