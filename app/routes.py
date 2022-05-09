@@ -146,7 +146,9 @@ def view_event(id):
         reminders_list = [from_timedelta(reminder.rem_before) for
                           reminder in reminders]
         reminders_list.append({'value': 0, 'time': 'week', 'delete': True})
+        time_list = [{'od_godziny': time(00,00), 'do_godziny': time(00,00), 'caly_dzien': False}]
         form.process(data={'reminders': reminders_list,
+                           'time': time_list,
                            'name': event.name,
                            'start': event.start_date,
                            'stop': event.stop_date})
