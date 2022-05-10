@@ -82,6 +82,23 @@ class Users_Events(UserMixin, db.Model):
         return f'<{self.owner}, {self.id}, {self.finish}, {self.description}, {self.aprove}, {self.users_id}, {self.events_id}, {self.tags_id}, {self.reminders_id} >'
 
 
+class Regular_Events(UserMixin, db.Model):
+
+    __tablename__ = 'Regular_Events'
+
+    id = db.Column(db.Integer, primary_key=True, nullable=False)
+    daily = db.Column(db.Boolean, nullable=False, default=False)
+    weekly = db.Column(db.Boolean, nullable=False, default=False)
+    monthly = db.Column(db.Boolean, nullable=False, default=False)
+    yearly = db.Column(db.Boolean, nullable=False, default=False)
+    events_id = db.Column(db.Integer, db.ForeignKey('Events.id'))
+
+    def __repr__(self):
+        return f'<id:{self.id}, daily:{self.daily}, weekly:{self.weekly} ' \
+               f'monthly:{self.monthly}, yearly:{self.yearly}, ' \
+               f'event_id:{self.events_id}'
+
+
 @login.user_loader
 def load_user(id_user):
     return Users.query.get(int(id_user))

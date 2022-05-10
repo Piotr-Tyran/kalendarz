@@ -49,6 +49,14 @@ class TimeForm(Form):
     do_godziny = TimeField('Do godziny:', validators=[DataRequired()])
     caly_dzien = BooleanField('caly dzien')
 
+
+class RegularForm(Form):
+    daily = BooleanField('Wydarzenie codzienne')
+    weekly = BooleanField('Wydarzenie cotygodniowe')
+    monthly = BooleanField('Wydarzenie comiesięczne')
+    yearly = BooleanField('Wydarzenie coroczne')
+
+
 class AddEventForm(FlaskForm):
     name = StringField('Wydarzenie:', default='')
     start = DateField('Rozpoczęcie:', default=datetime.today(),
@@ -57,6 +65,7 @@ class AddEventForm(FlaskForm):
                      validators=[DataRequired()])
     time = FieldList(FormField(TimeForm))
     reminders = FieldList(FormField(EntryForm))
+    regular = FieldList(FormField(RegularForm))
     submit = SubmitField('Utwórz wydarzenie')
 
 
@@ -66,4 +75,5 @@ class ViewEventForm(flask_wtf.FlaskForm):
     stop = DateField('Zakończenie:', validators=[DataRequired()])
     time = FieldList(FormField(TimeForm))
     reminders = FieldList(FormField(EntryForm))
+    regular = FieldList(FormField(RegularForm))
     submit = SubmitField('Zmień wydarzenie')
