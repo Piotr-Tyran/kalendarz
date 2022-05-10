@@ -24,10 +24,11 @@ def calendar(x=0):
     today = datetime.today().isocalendar()
     monday = datetime.fromisocalendar(today.year, today.week, 1)
     week = [monday + timedelta(days=x, weeks=offset) for x in range(7)]
+    hour = [timedelta(hours=0+x) for x in range(0, 24)]
     events = Events.query.join(Users_Events.query.filter_by(users_id=current_user.id)).\
         where(Events.id == Users_Events.events_id).all()
     return render_template('calendar.html', title='Kalendarz',
-                           offset=offset, week=week, events=events, current_day=current_day)
+                           offset=offset, week=week, events=events, current_day=current_day, hour=hour)
 
 
 @app.route('/Logowanie', methods=['GET', 'POST'])
