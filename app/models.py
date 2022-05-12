@@ -87,16 +87,15 @@ class Regular_Events(UserMixin, db.Model):
     __tablename__ = 'Regular_Events'
 
     id = db.Column(db.Integer, primary_key=True, nullable=False)
-    daily = db.Column(db.Boolean, nullable=False, default=False)
-    weekly = db.Column(db.Boolean, nullable=False, default=False)
-    monthly = db.Column(db.Boolean, nullable=False, default=False)
-    yearly = db.Column(db.Boolean, nullable=False, default=False)
+    start_date = db.Column(db.DateTime, nullable=False)
+    stop_date = db.Column(db.DateTime, nullable=False)
+    period = db.Column(db.Interval, nullable=False)
     events_id = db.Column(db.Integer, db.ForeignKey('Events.id'))
 
     def __repr__(self):
-        return f'<id:{self.id}, daily:{self.daily}, weekly:{self.weekly} ' \
-               f'monthly:{self.monthly}, yearly:{self.yearly}, ' \
-               f'event_id:{self.events_id}'
+        return f'<id:{self.id}, start_date:{self.start_date}, ' \
+               f'stop_date:{self.stop_date}, period:{self.period} ' \
+               f'events_id:{self.events_id}>'
 
 
 @login.user_loader
