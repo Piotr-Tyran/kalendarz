@@ -1,4 +1,5 @@
 from datetime import timedelta
+from dateutil.relativedelta import relativedelta
 
 
 def to_timedelta(reminder):
@@ -31,3 +32,32 @@ def from_timedelta(td):
         value = td / timedelta(minutes=1)
 
     return {'value': value, 'time': time, 'delete': False}
+
+
+def to_relativedelta(string):
+    if string == 'relativedelta(days=+1)':
+        rd = relativedelta(days=1)
+    elif string == 'relativedelta(days=+7)':
+        rd = relativedelta(weeks=1)
+    elif string == 'relativedelta(months=+1)':
+        rd = relativedelta(months=1)
+    else:
+        rd = None
+
+    return rd
+
+
+def from_relativedelta(string):
+    string = str(string)
+
+    if string == '1 day, 0:00:00':
+        rd = relativedelta(days=1)
+    elif string == '7 days, 0:00:00':
+        rd = relativedelta(weeks=1)
+    elif string in ('28 days, 0:00:00', '29 days, 0:00:00',
+                    '30 days, 0:00:00', '31 days, 0:00:00'):
+        rd = relativedelta(months=1)
+    else:
+        rd = relativedelta()
+
+    return rd
