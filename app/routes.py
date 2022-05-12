@@ -3,10 +3,12 @@ from app import app, db
 from app.forms import LoginForm, RegistrationForm, AddEventForm,\
     ViewEventForm
 from flask_login import current_user, login_user, logout_user, login_required
-from app.models import Users, Events, Users_Events, Reminders
+from app.models import Users, Events, Users_Events, Reminders, Regular_Events
 from sqlalchemy import desc
 from datetime import datetime, timedelta, time
-from app.funcs import to_timedelta, from_timedelta
+from app.funcs import to_timedelta, from_timedelta, to_relativedelta, \
+    from_relativedelta
+from dateutil.relativedelta import relativedelta
 
 
 @app.route('/')
@@ -105,7 +107,7 @@ def add_event_post():
 @app.route('/Dodaj_wydarzenie')
 def add_event_get():
     form = AddEventForm()
-    reminder_list = [{'value': 0, 'time': 'hour', 'delete': True}]
+    reminder_list = [{'value': 0, 'time': 'hour', 'delete': False}]
     time_list = [{'od_godziny': time(00,00), 'do_godziny': time(00,00), 'caly_dzien': False}]
     form.process(data={'reminders': reminder_list, 'time': time_list})
     return render_template('add_event.html',
@@ -121,6 +123,7 @@ def view_event(id):
         filter_by(events_id=id, users_id=current_user.id).\
         first_or_404()
     reminders = Reminders.query.filter_by(id_users_events=user_event.id).all()
+    regular_event = Regular_Events.query.filter_by(events_id=event.id).first()
     form = ViewEventForm()
     if form.validate_on_submit():
         event.name = form.name.data
@@ -139,6 +142,21 @@ def view_event(id):
                               id_users_events=user_event.id)
                 db.session.add(r)
 
+        period = to_relativedelta(form.regular[0].data['period'])
+        if period is not None:
+            if regular_event is not None:
+                regular_event.period = period
+            else:
+                re = Regular_Events(start_date=form.regular[0].data['start'],
+                                    stop_date=form.regular[0].data['stop'],
+                                    period=period,
+                                    events_id=id)
+                db.session.add(re)
+        else:
+            if regular_event is not None:
+                print('delete')
+                db.session.delete(regular_event)
+
         db.session.commit()
 
         flash('Zapisano zmiany')
@@ -148,11 +166,22 @@ def view_event(id):
                           reminder in reminders]
         reminders_list.append({'value': 0, 'time': 'week', 'delete': True})
         time_list = [{'od_godziny': time(00,00), 'do_godziny': time(00,00), 'caly_dzien': False}]
+        if regular_event is None:
+            regular_list = [{'period': relativedelta(),
+                             'start': datetime.today(),
+                             'stop': datetime.today() + relativedelta(years=1)}]
+        else:
+            regular_list = [{'period': from_relativedelta(regular_event.period),
+                             'start': regular_event.start_date,
+                             'stop': regular_event.stop_date}]
         form.process(data={'reminders': reminders_list,
                            'time': time_list,
                            'name': event.name,
                            'start': event.start_date,
-                           'stop': event.stop_date})
+                           'stop': event.stop_date,
+                           'regular': regular_list})
+
+
 
     return render_template('view_event.html', form=form,
                            user_event=user_event,

@@ -7,6 +7,7 @@ from wtforms.validators import DataRequired, ValidationError, Email,\
     EqualTo, NumberRange
 from app.models import Users
 from datetime import datetime
+from dateutil.relativedelta import relativedelta
 
 
 class LoginForm(FlaskForm):
@@ -51,10 +52,13 @@ class TimeForm(Form):
 
 
 class RegularForm(Form):
-    daily = BooleanField('Wydarzenie codzienne')
-    weekly = BooleanField('Wydarzenie cotygodniowe')
-    monthly = BooleanField('Wydarzenie comiesięczne')
-    yearly = BooleanField('Wydarzenie coroczne')
+    period = SelectField('Powtarzaj wydarzenie: ',
+                         choices=[(relativedelta(), 'nigdy'),
+                                  (relativedelta(days=1), 'codziennie'),
+                                  (relativedelta(weeks=1), 'co tydzień'),
+                                  (relativedelta(months=1), 'co miesiąc')])
+    start = DateField('Od:', validators=[DataRequired()])
+    stop = DateField('Do:', validators=[DataRequired()])
 
 
 class AddEventForm(FlaskForm):

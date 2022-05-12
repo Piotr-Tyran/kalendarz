@@ -32,7 +32,9 @@
             {{ time.caly_dzien() }} Czy wydarzenie ma trwac cały dzień
         </div>
     {% endfor %}
-    <p></p>
+
+    {{ form.regular[0] }}
+
     <p>Przypomnij:</p>
     {% for reminder in form.reminders %}
         {% if loop.last %}
