@@ -61,3 +61,47 @@ def from_relativedelta(string):
         rd = relativedelta()
 
     return rd
+
+
+def regular_in_this_week(events, regulars, week):
+    new_events = []
+    for event, regular in zip(events, regulars):
+        regular.period = from_relativedelta(regular.period)
+        if event.id == regular.events_id:
+            diff = event.stop_date - event.start_date
+            if regular.period == relativedelta(days=1):
+                for day in week:
+                    if day.date() != event.start_date.date():
+                        e = event.start_date.replace(year=day.year,
+                                                     month=day.month,
+                                                     day=day.day)
+                        event.start_date = e
+                        event.stop_date = event.start_date + diff
+                        new_events.append(event)
+
+            elif regular.period == relativedelta(days=7):
+                for day in week:
+                    if day.weekday() == event.start_date.weekday() and \
+                            day.date() != event.start_date.date():
+                        e = event.start_date.replace(year=day.year,
+                                                     month=day.month,
+                                                     day=day.day)
+                        event.start_date = e
+                        event.stop_date = event.start_date + diff
+                        new_events.append(event)
+
+            elif regular.period == relativedelta(months=1):
+                for day in week:
+                    if day.day == event.start_date.day and \
+                            day.date() != event.start_date.date():
+                        e = event.start_date.replace(year=day.year,
+                                                     month=day.month,
+                                                     day=day.day)
+                        event.start_date = e
+                        event.stop_date = event.start_date + diff
+                        new_events.append(event)
+
+    # work in progress
+    new_events = []
+    # work in progress
+    return new_events

@@ -7,7 +7,7 @@ from app.models import Users, Events, Users_Events, Reminders, Regular_Events
 from sqlalchemy import desc
 from datetime import datetime, timedelta, time
 from app.funcs import to_timedelta, from_timedelta, to_relativedelta, \
-    from_relativedelta
+    from_relativedelta, regular_in_this_week
 from dateutil.relativedelta import relativedelta
 
 
@@ -29,8 +29,20 @@ def calendar(x=0):
     hour = [timedelta(hours=0+x) for x in range(0, 24)]
     events = Events.query.join(Users_Events.query.filter_by(users_id=current_user.id)).\
         where(Events.id == Users_Events.events_id).all()
+    events_list = [e.id for e in events]
+    regulars = Regular_Events.query.all()
+    regulars_list = [r.events_id for r in regulars]
+    regular_events = Events.query.filter(Events.id.in_(regulars_list)).\
+        filter(Events.id.in_(events_list)).order_by(Events.id).all()
+    events_list = [e.id for e in events]
+    regulars = Regular_Events.query.filter(Regular_Events.id.in_(events_list)).\
+        order_by(Regular_Events.events_id).all()
+    new_events = regular_in_this_week(regular_events, regulars, week)
+    print(new_events)
+    events += new_events
     return render_template('calendar.html', title='Kalendarz',
-                           offset=offset, week=week, events=events, current_day=current_day, hour=hour)
+                           offset=offset, week=week, events=events,
+                           current_day=current_day, hour=hour)
 
 
 @app.route('/Logowanie', methods=['GET', 'POST'])
@@ -180,8 +192,6 @@ def view_event(id):
                            'start': event.start_date,
                            'stop': event.stop_date,
                            'regular': regular_list})
-
-
 
     return render_template('view_event.html', form=form,
                            user_event=user_event,
