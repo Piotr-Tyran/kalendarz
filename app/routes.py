@@ -14,6 +14,10 @@ from app.funcs import to_timedelta, from_timedelta
 def index():
     return render_template('index.html', title="strona startowa")
 
+@app.route('/Wylogowanie')
+def end():
+    return render_template('end.html', title="wylogowanie")
+
 
 @app.route('/Kalendarz')
 @app.route('/Kalendarz%<x>')
@@ -50,7 +54,7 @@ def login():
 @login_required
 def logout():
     logout_user()
-    return redirect(url_for('index'))
+    return redirect(url_for('end'))
 
 
 @app.route('/Rejestracja', methods=['GET', 'POST'])
@@ -99,7 +103,7 @@ def add_event_post():
                                      id_users_events=user_event_id)
                 db.session.add(r)
         db.session.commit()
-        return redirect(url_for('index'))
+        return redirect(url_for('calendar'))
 
 
 @app.route('/Dodaj_wydarzenie')
